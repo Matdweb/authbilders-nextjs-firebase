@@ -94,23 +94,6 @@ export default function App() {
     handleServerErrors();
   }, [serverResponse]);
 
-  // const sendPasswordResetEmail = async () => {
-  //   const response = await fetch("/api/reset-password/send", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     }
-  //   });
-
-  //   if (!response.ok) {
-  //     const message = `Error: ${response.status}`;
-  //     console.log(message);
-  //   }
-
-  //   const data = await response.json();
-  //   console.log(data);
-  // }
-
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
