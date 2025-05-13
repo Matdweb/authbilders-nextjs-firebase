@@ -30,7 +30,7 @@ export default function AuthForm({
   title,
   action,
   fields,
-  redirectTo = '/',
+  redirectTo,
   extraContent,
   validateBeforeSubmit,
 }: AuthFormProps) {
@@ -50,7 +50,7 @@ export default function AuthForm({
       setErrors(formatted);
     } else {
       setErrors({});
-      router.push(redirectTo);
+      if(redirectTo) router.push(redirectTo);
     }
   };
 
