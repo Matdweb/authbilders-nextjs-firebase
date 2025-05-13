@@ -1,5 +1,4 @@
 "use server";
-import { z } from "zod";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -8,30 +7,11 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebase";
 import { cookies } from "next/headers";
-import { authenticateActionState, prevActionState, resetPasswordEmailActionState } from "./defintions";
+import { AuthServerActionState } from "./defintions";
 import admin from "firebase-admin";
 import { createResetPasswordToken } from "@/app/lib/jwt-utils";
 import type { CreateEmailResponseSuccess } from "resend";
-
-const passwordSchema = z.string({
-  required_error: "Password is required",
-})
-  .min(6, { message: "Password must be 6 characters or more" })
-  .refine((value) => (
-    (value.match(/[A-Z]/g) || []).length < 1 ? false : true
-  ), {
-    message: "Password needs at least 1 uppercase letter"
-  })
-  .refine((value) => (
-    (value.match(/[^a-z0-9]/gi) || []).length < 1 ? false : true
-  ), {
-    message: "Password needs at least 1 symbol"
-  });
-
-const FormDataSchema = z.object({
-  email: z.string().email(),
-  password: passwordSchema,
-});
+import { FormDataSchema, passwordSchema } from "./zod";
 
 export async function loginOnFirebase(
   {
@@ -88,7 +68,7 @@ export async function loginOnFirebase(
 }
 
 export async function login(
-  prevState: authenticateActionState,
+  prevState: AuthServerActionState,
   formData: FormData
 ) {
   // 1. Validate form data against schema (email format and password length)
@@ -114,7 +94,7 @@ export async function login(
 }
 
 export async function signUp(
-  prevState: authenticateActionState,
+  prevState: AuthServerActionState,
   formData: FormData
 ) {
   const validatedFields = FormDataSchema.safeParse({
@@ -193,7 +173,7 @@ export async function signOut() {
 }
 
 export async function sendPasswordResetEmail(
-  prevState: resetPasswordEmailActionState,
+  prevState: AuthServerActionState,
   formData: FormData
 ) {
   const email = formData.get("email") as string;
@@ -230,7 +210,7 @@ export async function sendPasswordResetEmail(
 }
 
 export async function handlePasswordReset(
-  prevState: prevActionState | undefined,
+  prevState: AuthServerActionState,
   formData: FormData
 ) {
   const email = formData.get("email") as string;
