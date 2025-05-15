@@ -22,7 +22,6 @@ export default async function App() {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link href="/unprotected" className="rounded-md bg-primary-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-primary-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400">Go to unprotected page</Link>
               <p onClick={signOut} className="text-sm/6 font-semibold text-gray-200 cursor-pointer">Sign out <span aria-hidden="true">→</span></p>
-
             </div>
           </div>
         </div>
