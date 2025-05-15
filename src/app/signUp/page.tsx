@@ -4,7 +4,7 @@ import { passwordSchema } from '../lib/zod'
 import { signUp } from '@/app/lib/actions'
 import Link from 'next/link'
 
-export default function LoginPage() {
+export default function SignUpPage() {
   return (
     <AuthForm
       title="Sign Up"
