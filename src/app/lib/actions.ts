@@ -3,15 +3,16 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut as signOutFirebase,
-  sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "./firebase";
 import { cookies } from "next/headers";
 import { AuthServerActionState } from "./defintions";
 import admin from "firebase-admin";
-import { createResetPasswordToken } from "@/app/lib/jwt-utils";
+import { createResetPasswordToken } from "@/app/lib/utils/jwt";
 import type { CreateEmailResponseSuccess } from "resend";
 import { FormDataSchema, passwordSchema } from "./zod";
+import { sendEmailVerification } from "@/app/lib/utils/email";
+import { successResponse, errorResponse } from "./utils/response";
 
 export async function loginOnFirebase(
   {
@@ -96,66 +97,58 @@ export async function login(
 export async function signUp(
   prevState: AuthServerActionState,
   formData: FormData
-) {
+): Promise<AuthServerActionState> {
   const validatedFields = FormDataSchema.safeParse({
     email: formData.get("email") as string,
     password: formData.get("password") as string,
   });
 
   if (!validatedFields.success) {
-    return {
-      success: false,
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: ["Something seems odd. Failed to create User."],
-      user: null,
-    };
+    return errorResponse(
+      ["Something seems odd. Failed to create the user"],
+      validatedFields.error.flatten().fieldErrors
+    );
   }
 
   const { email, password } = validatedFields.data;
+
   try {
-    const { user } = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
-    const response = await loginOnFirebase({
-      email,
-      password,
-    });
+    const emailResult = await sendEmailVerification(email);
 
-    if (response.success) {
-      // Send email verification
-      await sendEmailVerification(user, {
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email`,
-      });
+    const firebaseUser = {
+      uid: user.uid || "",
+      email: user.email || "",
+      displayName: user.displayName || "",
+    };
+
+    if (!emailResult.success) {
+      return errorResponse(
+        ["User created successfully", ...emailResult.message],
+        {}
+      );
     }
 
-    return {
-      success: true,
-      errors: {},
-      message: ["User created successfully."],
-      user: {
-        uid: user.uid || "",
-        email: user.email || "",
-        displayName: user.displayName || "",
-      },
-    };
+    return successResponse(
+      ["User created successfully", "Please check your inbox or junk"],
+      {
+        user: firebaseUser,
+        data: emailResult.data,
+      }
+    );
   } catch (error: any) {
-    const errorCode = error?.code || "";
-    const errorMessage = error?.message || "";
+    const code = error?.code || "";
 
-    return {
-      success: false,
-      errors: {
+    return errorResponse(
+      ["Failed to create user", code],
+      {
         email:
-          errorCode === "auth/email-already-in-use"
-            ? ["Email already in use."]
+          code === "auth/email-already-in-use"
+            ? ["Email already in use"]
             : [""],
-      },
-      message: ["Something went wrong. Failed to create user.", errorCode],
-      user: null,
-    };
+      }
+    );
   }
 }
 
