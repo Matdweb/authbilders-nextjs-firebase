@@ -1,4 +1,4 @@
-import { EmailTemplate } from '@/components/EmailTemplate'
+import { ResetPasswordEmail } from '@/components/EmailTemplates/ResetPasswordEmail'
 import { ReactNode } from 'react';
 import { Resend } from 'resend';
 
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       from: 'Auth.Bilders <onboarding@resend.dev>',
       to: [email],
       subject: 'Password Reset Request',
-      react: EmailTemplate({ firstName: 'user', redirectUrl }) as ReactNode,
+      react: ResetPasswordEmail({ firstName: 'user', redirectUrl }) as ReactNode,
     });
 
     if (error) {
