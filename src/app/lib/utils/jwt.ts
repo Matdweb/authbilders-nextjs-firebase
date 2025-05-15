@@ -19,3 +19,19 @@ export async function verifyResetPasswordToken(token: string) {
     return;
   }
 }
+
+export async function createVerificationEmailToken(email: string) {
+  return jwt.sign({ email }, RESET_SECRET, { expiresIn: RESET_TOKEN_EXP });
+}
+
+export async function verifyVerificationEmailToken(token: string) {
+  try {
+    const payload = jwt.verify(token, RESET_SECRET) as { email: string };
+    if (payload) {
+      return payload.email;
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
