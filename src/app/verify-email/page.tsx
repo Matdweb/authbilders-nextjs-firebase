@@ -1,32 +1,29 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { verifySession } from '../lib/dal';
+import { verifyVerificationEmailToken } from '../lib/utils/jwt'
 import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { verifyEmail } from '../lib/utils/email';
 
 export default function App() {
     const waitingText = 'Waiting for email verification...';
     const [message, setMessage] = useState(waitingText);
     const router = useRouter();
+    const params = useSearchParams();
+    const token = params.get('token')!;
 
     const handleRedirect = () => {
         router.push('/');
     }
 
-    //TODO: The verification process is completed by calling applyActionCode. or dont use continue url at all.
-
     useEffect(() => {
         const handleEmailVerification = async () => {
+            const email = await verifyVerificationEmailToken(token);
             setTimeout(async () => {
-                const decoded = await verifySession();
-
-                if (decoded) {
-                    if (decoded.email_verified) {
-                        setMessage('✅ Email already verified!');
-                        setTimeout(() => {
-                            handleRedirect();
-                        }, 2000);
-
-                    }
+                if (email) {
+                    // setMessage('✅ Email already verified!'); return;
+                    const verified = await verifyEmail(email);
+                    if (verified) setMessage('✅ Email already verified!'); return;
                 } setMessage('❌ Email not verified!');
             }, 1000);
         }

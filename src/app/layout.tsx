@@ -6,7 +6,7 @@ import { CountDownTimer } from "@/components/CountDownTimer";
 import { verifySession } from "./lib/dal";
 import { UserInfo } from "@/components/UserInfo";
 import NavHeader from "@/components/NavHeader";
-import SessionErrorToasHandler from "@/components/Handlers/SessionErrorToastHandler";
+import SessionErrorToastHandler from "@/components/Handlers/SessionErrorToastHandler";
 
 export const metadata: Metadata = {
   title: "AuthBilders | Firabse",
@@ -29,7 +29,7 @@ export default async function RootLayout({
           <section className="w-full flex min-h-screen flex-col justify-start px-6 pt-12 lg:px-8 bg-gradient-to-r from-[#12222b] to-[#0e0e0e]">
             <NavHeader />
             {children}
-            {<SessionErrorToasHandler decoded={decoded} />}
+            {<SessionErrorToastHandler decoded={decoded} />}
             {<CountDownTimer data={decoded} />}
             <UserInfo data={decoded} />
           </section>

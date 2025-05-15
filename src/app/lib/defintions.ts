@@ -3,19 +3,25 @@ import type { CreateEmailResponseSuccess } from "resend";
 export type AuthServerActionState = {
   success?: boolean;
   message?: string[];
-  user?: {
-    uid?: string;
-    email?: string;
-    displayName?: string;
-  } | null;
-  data?: CreateEmailResponseSuccess | null;
-  errors?: {
-    name?: string[];
-    email?: string[];
-    password?: string[];
-    [key: string]: string[] | undefined;
-  };
+  user?: AuthServerActionStateUser;
+  data?: AuthServerActionStateData;
+  errors?: AuthServerActionStateErrors;
 } | undefined;
+
+export type AuthServerActionStateUser = {
+  uid?: string;
+  email?: string;
+  displayName?: string;
+} | null;
+
+export type AuthServerActionStateData = CreateEmailResponseSuccess | null;
+
+export type AuthServerActionStateErrors = {
+  name?: string[];
+  email?: string[];
+  password?: string[];
+  [key: string]: string[] | undefined;
+};
 
 export type FirebaseUser = {
   uid?: string;

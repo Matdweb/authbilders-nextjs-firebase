@@ -3,7 +3,7 @@ import AuthForm from '@/components/Form/AuthForm';
 import { useSearchParams } from "next/navigation";
 import { handlePasswordReset } from "@/app/lib/actions";
 import { passwordSchema } from '@/app/lib/zod';
-import { verifyResetPasswordToken } from '@/app/lib/jwt-utils';
+import { verifyResetPasswordToken } from '@/app/lib/utils/jwt';
 
 export default function Page() {
     const params = useSearchParams();
