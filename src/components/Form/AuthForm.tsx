@@ -1,10 +1,8 @@
-// components/auth/AuthForm.tsx
 'use client';
-
 import { useState, useActionState, useEffect, startTransition } from 'react';
 import { Form, Input, Button, Alert, Spinner } from '@heroui/react';
 import { useRouter } from 'next/navigation';
-import { z, ZodType } from 'zod';
+import { ZodType } from 'zod';
 import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/icons';
 import { AuthServerActionState } from '@/app/lib/defintions';
 
@@ -24,6 +22,8 @@ interface AuthFormProps {
   redirectTo?: string;
   extraContent?: React.ReactNode;
   validateBeforeSubmit?: (formData: FormData) => Promise<Record<string, string> | null>;
+  resetFormButton?: boolean;
+  sendButtonText?: string;
 }
 
 export default function AuthForm({
@@ -33,6 +33,8 @@ export default function AuthForm({
   redirectTo,
   extraContent,
   validateBeforeSubmit,
+  resetFormButton = true,
+  sendButtonText
 }: AuthFormProps) {
   const [serverResponse, formAction, isPending] = useActionState(action, undefined);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -50,7 +52,7 @@ export default function AuthForm({
       setErrors(formatted);
     } else {
       setErrors({});
-      if(redirectTo) router.push(redirectTo);
+      if (redirectTo) router.push(redirectTo);
     }
   };
 
@@ -146,9 +148,9 @@ export default function AuthForm({
               aria-disabled={isPending}
               isDisabled={isPending}
             >
-              {isPending ? <Spinner color="white" variant="dots" /> : title}
+              {isPending ? <Spinner color="white" variant="dots" /> : (sendButtonText || title)}
             </Button>
-            <Button type="reset" variant="bordered">Reset</Button>
+            {resetFormButton && (<Button type="reset" variant="bordered">Reset</Button>)}
           </div>
           {serverResponse && (
             <div className="w-full flex items-center my-3">
@@ -159,6 +161,17 @@ export default function AuthForm({
               />
             </div>
           )}
+          {
+            errors.token && (
+              <div className="w-full flex items-center my-3">
+                <Alert
+                  color={"danger"}
+                  title={errors.token}
+                  description={"Please resend email"}
+                />
+              </div>
+            )
+          }
           {extraContent}
         </div>
       </Form>
