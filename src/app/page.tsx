@@ -1,5 +1,5 @@
 import { UnlockedPadlockIcon } from '../components/icons'
-import { signOut } from './lib/actions'
+import { signOut } from './lib/actions';
 import Link from 'next/link'
 
 export default function App() {

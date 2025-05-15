@@ -195,7 +195,7 @@ export async function sendPasswordResetEmail(
   if (!response.ok) {
     return {
       success: false,
-      message: ["Failed to send email"],
+      message: ["Failed to send email", "Please try again"],
       data: null,
     }
   }
@@ -204,7 +204,7 @@ export async function sendPasswordResetEmail(
 
   return {
     success: true,
-    message: ["Email sent successfully"],
+    message: ["Email sent successfully", "Check your inbox and junk"],
     data,
   }
 }
@@ -239,12 +239,12 @@ export async function handlePasswordReset(
   if (!data) {
     return {
       success: false,
-      message: ["Failed to update password."],
+      message: ["Failed to update password.", "Please try again"],
     };
   }
 
   return {
     success: true,
-    message: ["Password updated successfully."],
+    message: ["Password updated successfully.", "You can now login with your new password"],
   };
 }
