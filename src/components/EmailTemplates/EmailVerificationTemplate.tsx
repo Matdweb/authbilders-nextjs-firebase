@@ -3,8 +3,7 @@ interface EmailTemplateProps {
     redirectUrl: string;
 }
 
-//TODO: Enhance the email template with a better design that sticks to desing system
-export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
+export const EmailVerificationTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
     firstName,
     redirectUrl
 }) => {
@@ -153,11 +152,11 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
                 </div>
                 <div style={textContainerStyle}>
                     <div style={{ textAlign: 'left' }}>
-                        <h1 style={{ ...titleStyle, textAlign: 'left' }}>Reset your Password</h1>
+                        <h1 style={{ ...titleStyle, textAlign: 'left' }}>Verify your Email</h1>
                         <p style={{ ...paragraph1Style, textAlign: 'left' }}>Hello {firstName}, <br />Click on the button below to be redirected</p>
                         <div style={buttonStyle}>
                             <a href={redirectUrl} style={resetButtonStyle}>
-                                Reset Password Page
+                                Email Verification
                             </a>
                         </div>
                         <p style={{ ...paragraph2Style, textAlign: 'left' }}>Don't share this with anyone 🤫, <br />Thank you</p>
