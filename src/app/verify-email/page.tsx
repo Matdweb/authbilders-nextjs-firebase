@@ -21,7 +21,6 @@ export default function App() {
             const email = await verifyVerificationEmailToken(token);
             setTimeout(async () => {
                 if (email) {
-                    // setMessage('✅ Email already verified!'); return;
                     const verified = await verifyEmail(email);
                     if (verified) setMessage('✅ Email already verified!'); return;
                 } setMessage('❌ Email not verified!');

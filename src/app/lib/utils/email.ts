@@ -1,4 +1,5 @@
 'use server';
+import { signOut } from "../actions";
 import { createVerificationEmailToken } from "./jwt";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -39,6 +40,7 @@ export async function verifyEmail(email: string) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email }),
         });
+        await signOut();
         return response.ok;
     } catch (e) {
         return false;

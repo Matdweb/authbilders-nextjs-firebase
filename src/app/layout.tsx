@@ -31,7 +31,7 @@ export default async function RootLayout({
             {children}
             {<SessionErrorToastHandler decoded={decoded} />}
             {<CountDownTimer data={decoded} />}
-            <UserInfo data={decoded} />
+            {<UserInfo data={decoded} />}
           </section>
         </Providers>
       </body>
