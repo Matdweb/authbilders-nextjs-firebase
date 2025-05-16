@@ -1,11 +1,12 @@
 import { ResetPasswordEmail } from '@/components/EmailTemplates/ResetPasswordEmail'
-import { ReactNode } from 'react';
-import { Resend } from 'resend';
+import { Resend } from 'resend'
+import { NextResponse } from 'next/server'
+import { ReactNode } from 'react'
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: Request) {
-  const { email, redirectUrl } = await request.json();
+  const { email, redirectUrl } = await request.json()
 
   try {
     const { data, error } = await resend.emails.send({
@@ -16,24 +17,20 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      return Response.json({
-        success: false,
+      return NextResponse.json({
         message: error.message,
-        data: null,
+        data: null
       }, { status: 500 });
     }
 
-    return Response.json({
-      success: true,
+    return NextResponse.json({
       message: 'Email sent successfully',
       data,
     }, { status: 200 });
-
-  } catch (error) {
-    return Response.json({
-      success: false,
+  } catch {
+    return NextResponse.json({
       message: 'Failed to send email',
-      data: null,
+      data: null
     }, { status: 500 });
   }
 }
