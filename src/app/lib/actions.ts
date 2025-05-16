@@ -5,14 +5,15 @@ import {
   signOut as signOutFirebase,
 } from "firebase/auth";
 import { auth } from "./firebase/firebase";
+import { auth } from "./firebase/firebase";
 import { cookies } from "next/headers";
 import { AuthServerActionState } from "./defintions";
 import { createResetPasswordToken } from "@/app/lib/utils/jwt";
 import type { CreateEmailResponseSuccess } from "resend";
-import { useAPI } from "@/app/lib/utils/api";
 import { FormDataSchema, passwordSchema } from "./zod";
 import { sendEmailVerification } from "@/app/lib/utils/email";
 import { successResponse, errorResponse } from "./utils/response";
+import { ServerResponse } from "./defintions";
 
 export async function loginOnFirebase(
   {
@@ -170,22 +171,64 @@ export async function sendPasswordResetEmail(
   formData: FormData
 ): Promise<AuthServerActionState> {
   const email = formData.get("email") as string;
-  const token = await createResetPasswordToken(email);
+  const resetToken = await createResetPasswordToken(email);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  const result = await useAPI("/api/reset-password/send", {
-    email,
-    redirectUrl: `${baseUrl}/forgot-password/reset-password?token=${token}`
-  });
+  try {
+    const response = await fetch(`${baseUrl}/api/reset-password/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        redirectUrl: `${baseUrl}/forgot-password/reset-password?token=${resetToken}`
+      }),
+    });
 
-  if (!result.success) {
-    return errorResponse(
-      result.message,
-    );
+    const result = await response.json();
+    return {
+      success: response.ok,
+      message: [result?.message || "Unknown server response"],
+      data: result?.data ?? null,
+    };
+  } catch (e) {
+    return {
+      success: false,
+      message: ["Email server error"],
+      data: null,
+    };
+  }
+}
+
+export async function handlePasswordReset(
+  prevState: AuthServerActionState,
+  formData: FormData
+) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  const validated = passwordSchema.safeParse(password);
+  if (!validated.success) {
+    return errorResponse(["Invalid password"], {
+      password: validated.error.flatten().fieldErrors[0]
+    });
   }
 
-  return successResponse(
-    ["Email sent successfully", "Check your inbox and junk"],
-    { data: result.data }
-  );
+  try {
+    const user = await admin.auth().getUserByEmail(email);
+    if (!user) {
+      return errorResponse(["User not found"]);
+    }
+
+    await admin.auth().updateUser(user.uid, { password });
+
+    return successResponse([
+      "Password updated successfully.",
+      "You can now login with your new password"
+    ]);
+  } catch {
+    return errorResponse([
+      "Failed to update password.",
+      "Please try again"
+    ]);
+  }
 }
