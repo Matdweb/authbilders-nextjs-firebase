@@ -5,15 +5,13 @@ import {
   signOut as signOutFirebase,
 } from "firebase/auth";
 import { auth } from "./firebase/firebase";
-import { auth } from "./firebase/firebase";
 import { cookies } from "next/headers";
 import { AuthServerActionState } from "./defintions";
 import { createResetPasswordToken } from "@/app/lib/utils/jwt";
-import type { CreateEmailResponseSuccess } from "resend";
 import { FormDataSchema, passwordSchema } from "./zod";
 import { sendEmailVerification } from "@/app/lib/utils/email";
 import { successResponse, errorResponse } from "./utils/response";
-import { ServerResponse } from "./defintions";
+import admin from 'firebase-admin';
 
 export async function loginOnFirebase(
   {
