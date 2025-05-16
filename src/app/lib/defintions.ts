@@ -34,3 +34,9 @@ export type authenticateActionErrors = {
   email?: string[] | undefined;
   password?: string[] | undefined;
 };
+
+export type ServerResponse<T = any> = {
+    success: boolean;
+    message: string[];
+    data?: T | null;
+};
