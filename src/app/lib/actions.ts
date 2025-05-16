@@ -1,18 +1,17 @@
-"use server";
+'use server';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut as signOutFirebase,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth } from "./firebase/firebase";
 import { cookies } from "next/headers";
 import { AuthServerActionState } from "./defintions";
-import admin from "firebase-admin";
 import { createResetPasswordToken } from "@/app/lib/utils/jwt";
-import type { CreateEmailResponseSuccess } from "resend";
 import { FormDataSchema, passwordSchema } from "./zod";
 import { sendEmailVerification } from "@/app/lib/utils/email";
 import { successResponse, errorResponse } from "./utils/response";
+import admin from 'firebase-admin';
 
 export async function loginOnFirebase(
   {
@@ -168,37 +167,33 @@ export async function signOut() {
 export async function sendPasswordResetEmail(
   prevState: AuthServerActionState,
   formData: FormData
-) {
+): Promise<AuthServerActionState> {
   const email = formData.get("email") as string;
   const resetToken = await createResetPasswordToken(email);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  const response = await fetch(`${baseUrl}/api/reset-password/send`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      redirectUrl: `${baseUrl}/forgot-password/reset-password?token=${resetToken}`,
-    }),
-  });
+  try {
+    const response = await fetch(`${baseUrl}/api/reset-password/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        redirectUrl: `${baseUrl}/forgot-password/reset-password?token=${resetToken}`
+      }),
+    });
 
-
-  if (!response.ok) {
+    const result = await response.json();
+    return {
+      success: response.ok,
+      message: [result?.message || "Unknown server response"],
+      data: result?.data ?? null,
+    };
+  } catch (e) {
     return {
       success: false,
-      message: ["Failed to send email", "Please try again"],
+      message: ["Email server error"],
       data: null,
-    }
-  }
-
-  const data: CreateEmailResponseSuccess = await response.json();
-
-  return {
-    success: true,
-    message: ["Email sent successfully", "Check your inbox and junk"],
-    data,
+    };
   }
 }
 
@@ -209,35 +204,29 @@ export async function handlePasswordReset(
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  const validatedFields = passwordSchema.safeParse(password);
-
-  if (!validatedFields.success) {
-    console.log(validatedFields.error.flatten().fieldErrors)
-    return {
-      success: false,
-      message: ["Password does not meet the requirements."],
-    };
+  const validated = passwordSchema.safeParse(password);
+  if (!validated.success) {
+    return errorResponse(["Invalid password"], {
+      password: validated.error.flatten().fieldErrors[0]
+    });
   }
 
-  const user = await admin.auth().getUserByEmail(email);
+  try {
+    const user = await admin.auth().getUserByEmail(email);
+    if (!user) {
+      return errorResponse(["User not found"]);
+    }
 
-  if (!user) {
-    return {
-      success: false,
-      message: ["No user was found with the email provided."],
-    };
+    await admin.auth().updateUser(user.uid, { password });
+
+    return successResponse([
+      "Password updated successfully.",
+      "You can now login with your new password"
+    ]);
+  } catch {
+    return errorResponse([
+      "Failed to update password.",
+      "Please try again"
+    ]);
   }
-
-  const data = await admin.auth().updateUser(user.uid, { password });
-  if (!data) {
-    return {
-      success: false,
-      message: ["Failed to update password.", "Please try again"],
-    };
-  }
-
-  return {
-    success: true,
-    message: ["Password updated successfully.", "You can now login with your new password"],
-  };
 }

@@ -1,22 +1,20 @@
 'use server';
 import { createVerificationEmailToken } from "./jwt";
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-type ServerResponse<T = any> = {
-    success: boolean;
-    message: string[];
-    data?: T | null;
-};
+export async function sendEmailVerification(email: string) {
 
-export async function useAPI(
-    endpoint: string,
-    payload: Record<string, unknown>
-): Promise<ServerResponse> {
+    const token = await createVerificationEmailToken(email);
+
     try {
-        const response = await fetch(`${baseUrl}${endpoint}`, {
+        const response = await fetch(`${baseUrl}/api/verify-email/send`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+            body: JSON.stringify({
+                email,
+                redirectUrl: `${baseUrl}/verify-email?token=${token}`,
+            }),
         });
 
         const result = await response.json();
@@ -34,15 +32,15 @@ export async function useAPI(
     }
 }
 
-export async function sendEmailVerification(email: string) {
-    const token = await createVerificationEmailToken(email);
-    return useAPI("/api/verify-email/send", {
-        email,
-        redirectUrl: `${baseUrl}/verify-email?token=${token}`,
-    });
-}
-
 export async function verifyEmail(email: string) {
-    const res = await useAPI("/api/verify-email", { email });
-    return res.success;
+    try {
+        const response = await fetch(`${baseUrl}/api/verify-email`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        });
+        return response.ok;
+    } catch (e) {
+        return false;
+    }
 }
