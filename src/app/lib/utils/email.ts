@@ -1,10 +1,37 @@
 'use server';
 import { createVerificationEmailToken } from "./jwt";
-import { useAPI } from "./api";
+import { ServerResponse } from "../defintions";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+export async function useAPI(
+    endpoint: string,
+    payload: Record<string, unknown>
+): Promise<ServerResponse> {
+    try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+        const response = await fetch(`${baseUrl}${endpoint}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+
+        const result = await response.json();
+        return {
+            success: response.ok,
+            message: [result?.message || "Unknown server response"],
+            data: result?.data ?? null,
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: ["Email server error"],
+            data: null,
+        };
+    }
+}
 
 export async function sendEmailVerification(email: string) {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
     const token = await createVerificationEmailToken(email);
     return useAPI("/api/verify-email/send", {
         email,
