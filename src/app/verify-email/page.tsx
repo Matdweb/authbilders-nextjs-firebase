@@ -28,7 +28,7 @@ export default function App() {
         }
 
         handleEmailVerification();
-    }, []);
+    });
 
     useEffect(() => {
         const timer = setTimeout(() => {

@@ -29,7 +29,7 @@ export default function LoginPage() {
       extraContent={
         <section className="mt-8 text-gray-400">
           <p className="text-center">
-            Don't have an account? <Link href="/signUp" className="text-blue-500">Sign Up</Link>
+            Don&apos;t have an account? <Link href="/signUp" className="text-blue-500">Sign Up</Link>
           </p>
           <p className="text-center">
             A lot in mind? <Link href="/forgot-password/provide-email" className="text-blue-500 cursor-pointer">Forgot password</Link>
