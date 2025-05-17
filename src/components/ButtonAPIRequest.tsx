@@ -1,25 +1,20 @@
-'use client';
-import { useState } from 'react';
-import { Tooltip, Button, Code } from "@heroui/react";
+'use client'
+import { useState } from 'react'
+import { Tooltip, Button, Code } from '@heroui/react'
 
-export default function ButtonAPIRequest() {
-    const [response, setResponse] = useState<string | null>(null);
+export default function ButtonAPIRequest({ className }: { className?: string }) {
+    const [response, setResponse] = useState<string | null>(null)
 
     const handleAPIRequest = async () => {
-        const response = await fetch("/api/data", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        const response = await fetch('/api/data')
+        if (!response.ok) return console.log('Failed to fetch data.')
 
-        if (!response.ok) {
-            console.log("Failed to fetch data from API route.");
-            return;
-        }
+        const data = await response.json()
+        setResponse(JSON.stringify(data, null, 2))
+    }
 
-        const data = await response.json();
-        setResponse(JSON.stringify(data, null, 2)); // Format the response as a string
+    const handleDismiss = () => {
+        setResponse(null)
     }
 
     return (
@@ -38,20 +33,32 @@ export default function ButtonAPIRequest() {
                     color="primary"
                     variant="shadow"
                     onPress={handleAPIRequest}
+                    className={className}
                 >
                     <p className="text-sm/6 font-semibold text-gray-200">API route</p>
                 </Button>
             </Tooltip>
-            {
-                (response !== null) &&
-                (<div className="fixed bottom-0 left-0 p-4 pb-20 rounded-lg shadow-lg">
-                    <Code color={response.includes("error") ? "danger" : "success"}>
-                        <pre className="whitespace-pre-wrap break-words">
-                            {response}
-                        </pre>
+
+            {response && (
+                <div className="fixed top-4 right-4 z-[9999] md:max-w-md max-w-sm w-full bg-[#0e0e0e] border border-gray-800 rounded-xl shadow-xl p-4 text-gray-100">
+                    <div className="flex justify-between items-start mb-2">
+                        <span className="text-xs font-medium text-gray-400">API Response</span>
+                        <button
+                            onClick={handleDismiss}
+                            className="text-gray-500 hover:text-red-400 transition-colors"
+                            aria-label="Close"
+                        >
+                            <span>x</span>
+                        </button>
+                    </div>
+                    <Code
+                        color={response.includes('error') ? 'danger' : 'success'}
+                        className="w-full max-h-64 overflow-auto"
+                    >
+                        <pre className="whitespace-pre-wrap break-words text-xs">{response}</pre>
                     </Code>
-                </div>)
-            }
+                </div>
+            )}
         </>
     )
 }
