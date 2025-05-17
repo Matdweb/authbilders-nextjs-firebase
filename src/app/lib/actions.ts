@@ -13,8 +13,10 @@ import { sendEmailVerification } from "@/app/lib/utils/email";
 import { successResponse, errorResponse } from "./utils/response";
 import { setAuthCookie } from "./utils/auth";
 import admin from 'firebase-admin';
+import { User } from "firebase/auth";
+import { extractErrorDetails } from '@/app/lib/utils/errrors'
 
-const extractUser = (user: any) => ({
+const extractUser = (user: User) => ({
   uid: user?.uid || '',
   email: user?.email || '',
   displayName: user?.displayName || '',
@@ -43,9 +45,11 @@ export async function login(
     return successResponse(['Logged in successfully'], {
       user: extractUser(user)
     })
-  } catch (error: any) {
+  } catch (error) {
+    const { code, message } = extractErrorDetails(error)
+
     return errorResponse(
-      ['Login failed', error.code === 'auth/invalid-credential' ? 'Invalid credentials' : error.message],
+      ['Login failed', code === 'auth/invalid-credential' ? 'Invalid credentials' : message],
       {}
     )
   }
@@ -81,15 +85,15 @@ export async function signUp(
       user: baseUser,
       data: emailRes.data,
     })
-  } catch (error: any) {
-    const code = error.code || ''
+  } catch (error) {
+    const { code, message } = extractErrorDetails(error)
+
     return errorResponse(
-      ['Failed to create user', code],
-      {
-        email: code === 'auth/email-already-in-use' ? ['Email already in use'] : ['']
-      }
+      ['Login failed', code === 'auth/invalid-credential' ? 'Invalid credentials' : message],
+      {}
     )
   }
+
 }
 
 export async function signOut(): Promise<AuthServerActionState> {
@@ -98,7 +102,8 @@ export async function signOut(): Promise<AuthServerActionState> {
     const cookieStore = await cookies()
     cookieStore.delete('session')
     return successResponse(['Signed out successfully'])
-  } catch (e) {
+  } catch (error) {
+    console.log(error);
     return errorResponse(['Sign out failed'])
   }
 }
@@ -126,10 +131,11 @@ export async function sendPasswordResetEmail(
       message: [result?.message || "Unknown server response"],
       data: result?.data ?? null,
     };
-  } catch (e) {
+  } catch (error) {
+    const { message } = extractErrorDetails(error);
     return {
       success: false,
-      message: ["Email server error"],
+      message: ["Email server error", message],
       data: null,
     };
   }

@@ -110,18 +110,6 @@ export const EmailVerificationTemplate: React.FC<Readonly<EmailTemplateProps>> =
         ...resetButtonBaseStyle,
     };
 
-    const resetButtonHoverStyle = {
-        ...resetButtonBaseStyle,
-        backgroundColor: '#4338ca',
-    };
-
-    const resetButtonFocusVisible = {
-        ...resetButtonBaseStyle,
-        outlineWidth: '2px',
-        outlineStyle: 'solid',
-        outlineColor: '#6d28d9',
-    };
-
     const paragraph2Style = {
         marginTop: '2rem',
         fontSize: '1.125rem',
@@ -159,7 +147,7 @@ export const EmailVerificationTemplate: React.FC<Readonly<EmailTemplateProps>> =
                                 Email Verification
                             </a>
                         </div>
-                        <p style={{ ...paragraph2Style, textAlign: 'left' }}>Don't share this with anyone 🤫, <br />Thank you</p>
+                        <p style={{ ...paragraph2Style, textAlign: 'left' }}>Don&apos;t share this with anyone 🤫, <br />Thank you</p>
                     </div>
                 </div>
                 <div style={footerStyle}>

@@ -35,8 +35,12 @@ export type authenticateActionErrors = {
   password?: string[] | undefined;
 };
 
-export type ServerResponse<T = any> = {
-    success: boolean;
-    message: string[];
-    data?: T | null;
+export type ServerResponse<T = unknown> = {
+  success: boolean;
+  message: string[];
+  data?: T | null;
 };
+
+export type CatchedError = {
+  code?: string;
+}

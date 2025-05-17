@@ -1,6 +1,7 @@
 'use server';
 import { signOut } from "../actions";
 import { createVerificationEmailToken } from "./jwt";
+import { extractErrorDetails } from "./errrors";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -24,10 +25,12 @@ export async function sendEmailVerification(email: string) {
             message: [result?.message || "Unknown server response"],
             data: result?.data ?? null,
         };
-    } catch (e) {
+    } catch (error) {
+        const { message } = extractErrorDetails(error)
+
         return {
             success: false,
-            message: ["Email server error"],
+            message: ["Email server error", message],
             data: null,
         };
     }
@@ -42,7 +45,8 @@ export async function verifyEmail(email: string) {
         });
         await signOut();
         return response.ok;
-    } catch (e) {
+    } catch (error) {
+        console.log(error);
         return false;
     }
 }

@@ -5,11 +5,6 @@ import type {
     AuthServerActionStateErrors
 } from "../defintions";
 
-type BaseResponse = {
-    success: boolean;
-    message: string[];
-};
-
 type AuthServerActionStateExtras = {
     user?: AuthServerActionStateUser;
     data?: AuthServerActionStateData;

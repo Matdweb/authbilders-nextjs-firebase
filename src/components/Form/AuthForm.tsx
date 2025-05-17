@@ -11,7 +11,7 @@ interface AuthFormField {
   label: string;
   type: 'email' | 'password' | 'text';
   required?: boolean;
-  schema?: ZodType<any>;
+  schema?: ZodType<unknown>;
   onValueChange?: (value: string) => void;
 }
 

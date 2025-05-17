@@ -15,6 +15,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
 import ButtonAPIRequest from './ButtonAPIRequest'
+import Image from 'next/image'
 
 export default function NavHeader() {
     const pathname = usePathname()
@@ -43,7 +44,9 @@ export default function NavHeader() {
                 <NavbarBrand>
                     <Link href="/" className="flex items-center gap-x-2">
                         <span className="text-gray-400">Made with</span>
-                        <img
+                        <Image
+                            width={32}
+                            height={32}
                             className="h-8 w-auto"
                             src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=blue&shade=400"
                             alt="Tailwind logo"
