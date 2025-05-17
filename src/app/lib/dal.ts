@@ -11,7 +11,7 @@ export const verifySession = cache(async () => {
         const decoded = await verifyIdToken(token);
         return decoded;
 
-    } catch (error: any) {
+    } catch (error) {
         console.log(error);
         return;
     }
