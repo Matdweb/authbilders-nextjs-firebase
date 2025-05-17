@@ -26,7 +26,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${ibmPlexSans.variable} antialiased`}
       >
         <Providers>
-          <section className="w-full flex min-h-screen flex-col justify-start px-6 pt-12 lg:px-8 bg-gradient-to-r from-[#12222b] to-[#0e0e0e]">
+          <section className="w-full flex min-h-screen flex-col justify-start bg-gradient-to-r from-[#12222b] to-[#0e0e0e]">
             <NavHeader />
             {children}
             {<SessionErrorToastHandler decoded={decoded} />}

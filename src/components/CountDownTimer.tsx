@@ -47,7 +47,7 @@ export function CountDownTimer({
   };
 
   return (
-    <div className="fixed top-0 right-0 z-40 pt-20 pr-6">
+    <div className="fixed top-0 right-0 z-30 pt-20 pr-6">
       <div className={`${inconsolata.className} relative p-4 border-2 border-solid border-gray-800 rounded-lg`}>
         <div className="absolute inset-0 border border-solid border-gray-600 blur-md bg-gradient-to-r from-[#1d1f20] to-[#0e0e0e] rounded-lg" />
         <div className="relative flex flex-col justify-center items-center">
