@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Tooltip, Button, Code, Spinner } from '@heroui/react'
 import { CloseIcon } from './icons';
+import { createPortal } from 'react-dom';
 
 export default function ButtonAPIRequest({ className }: { className?: string }) {
 
@@ -51,26 +52,28 @@ export default function ButtonAPIRequest({ className }: { className?: string }) 
                 </Button>
             </Tooltip>
 
-            {response && (
-                <div className="fixed top-4 right-4 z-[9999] md:max-w-md max-w-sm w-full bg-[#0e0e0e] border border-gray-800 rounded-xl shadow-xl p-4 text-gray-100">
-                    <div className="flex justify-between items-start mb-2">
-                        <span className="text-xs font-medium text-gray-400">API Response</span>
-                        <button
-                            onClick={handleDismiss}
-                            className="text-gray-500 hover:text-red-400 transition-colors"
-                            aria-label="Close"
+            {response &&
+                createPortal(
+                    <div className="fixed bottom-0 left- z-[9999] md:max-w-md max-w-sm w-full bg-[#0e0e0e] border border-gray-800 rounded-xl shadow-xl p-4 text-gray-100">
+                        <div className="flex justify-between items-start mb-2">
+                            <span className="text-xs font-medium text-gray-400">API Response</span>
+                            <button
+                                onClick={handleDismiss}
+                                className="text-gray-500 hover:text-red-400 transition-colors"
+                                aria-label="Close"
+                            >
+                                <CloseIcon />
+                            </button>
+                        </div>
+                        <Code
+                            color={response.includes('error') ? 'danger' : 'success'}
+                            className="w-full max-h-64 overflow-auto"
                         >
-                            <CloseIcon />
-                        </button>
-                    </div>
-                    <Code
-                        color={response.includes('error') ? 'danger' : 'success'}
-                        className="w-full max-h-64 overflow-auto"
-                    >
-                        <pre className="whitespace-pre-wrap break-words text-xs">{response}</pre>
-                    </Code>
-                </div>
-            )}
+                            <pre className="whitespace-pre-wrap break-words text-xs">{response}</pre>
+                        </Code>
+                    </div>,
+                    document.body
+                )}
         </>
     )
 }
