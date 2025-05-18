@@ -85,7 +85,7 @@ export default function NavHeader() {
                 {links.map((link) => (
                     <NavbarItem key={link.href}>
                         <Button color="primary" variant="bordered" className='w-full justify-start'>
-                            <Link href={link.href} className="text-sm/6 text-left font-semibold text-gray-200 px-2">{link.label}</Link>
+                            <Link href={link.href} className="w-full text-sm/6 text-left font-semibold text-gray-200 px-2">{link.label}</Link>
                         </Button>
                     </NavbarItem>
                 ))}

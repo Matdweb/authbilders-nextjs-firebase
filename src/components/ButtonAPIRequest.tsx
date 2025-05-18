@@ -1,12 +1,17 @@
 'use client'
 import { useState } from 'react'
-import { Tooltip, Button, Code } from '@heroui/react'
+import { Tooltip, Button, Code, Spinner } from '@heroui/react'
+import { CloseIcon } from './icons';
 
 export default function ButtonAPIRequest({ className }: { className?: string }) {
+
+    const [isPending, setIsPending] = useState<boolean>(false);
     const [response, setResponse] = useState<string | null>(null)
 
     const handleAPIRequest = async () => {
-        const response = await fetch('/api/data')
+        setIsPending(true);
+        const response = await fetch('/api/data');
+        setIsPending(false);
         if (!response.ok) return console.log('Failed to fetch data.')
 
         const data = await response.json()
@@ -33,9 +38,16 @@ export default function ButtonAPIRequest({ className }: { className?: string }) 
                     color="primary"
                     variant="shadow"
                     onPress={handleAPIRequest}
-                    className={className}
+                    className={"min-w-28 " + className}
                 >
-                    <p className="text-sm/6 font-semibold text-gray-200">API route</p>
+                    {
+                        isPending ?
+                            <Spinner color="white" variant="dots" />
+                            :
+                            <p className="text-sm/6 font-semibold text-gray-200">
+                                API Route
+                            </p>
+                    }
                 </Button>
             </Tooltip>
 
@@ -48,7 +60,7 @@ export default function ButtonAPIRequest({ className }: { className?: string }) 
                             className="text-gray-500 hover:text-red-400 transition-colors"
                             aria-label="Close"
                         >
-                            <span>x</span>
+                            <CloseIcon />
                         </button>
                     </div>
                     <Code
