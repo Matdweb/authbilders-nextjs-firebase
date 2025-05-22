@@ -42,16 +42,14 @@ export default function NavHeader() {
                     className="lg:hidden text-gray-300"
                 />
                 <NavbarBrand>
-                    <Link href="/" className="flex items-center gap-x-2">
-                        <span className="text-gray-400">Made with</span>
-                        <Image
-                            width={32}
-                            height={32}
-                            className="h-8 w-auto"
-                            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=blue&shade=400"
-                            alt="Tailwind logo"
-                        />
-                    </Link>
+                    <div className="flex items-center gap-2">
+                        <Link href="/" className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">
+                                AB
+                            </div>
+                            <span className="font-bold hidden sm:block text-xl">AuthBuilders</span>
+                        </Link>
+                    </div>
                 </NavbarBrand>
             </NavbarContent>
 
