@@ -28,7 +28,7 @@ export default function LoginPage() {
       ]}
       thirdPartyProviders={['google', 'github']}
       extraContent={
-        <section className="mt-8 text-gray-400">
+        <section className="mt-4 text-gray-400">
           <p className="text-center">
             Don&apos;t have an account? <Link href="/signUp" className="text-blue-500">Sign Up</Link>
           </p>
