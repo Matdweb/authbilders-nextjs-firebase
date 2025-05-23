@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ZodType } from 'zod';
 import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/icons';
 import { AuthServerActionState } from '@/app/lib/defintions';
+import { GoogleIcon, GithubIcon } from '@/components/icons';
 
 interface AuthFormField {
   name: string;
@@ -24,6 +25,7 @@ interface AuthFormProps {
   validateBeforeSubmit?: (formData: FormData) => Promise<Record<string, string> | null>;
   resetFormButton?: boolean;
   sendButtonText?: string;
+  thirdPartyProviders?: Array<"google" | "github">
 }
 
 export default function AuthForm({
@@ -34,7 +36,8 @@ export default function AuthForm({
   extraContent,
   validateBeforeSubmit,
   resetFormButton = true,
-  sendButtonText
+  sendButtonText,
+  thirdPartyProviders
 }: AuthFormProps) {
   const [serverResponse, formAction, isPending] = useActionState(action, undefined);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -152,6 +155,47 @@ export default function AuthForm({
             </Button>
             {resetFormButton && (<Button type="reset" variant="bordered">Reset</Button>)}
           </div>
+
+          {
+            thirdPartyProviders && (
+              <div className="w-full">
+                <div className="flex items-center justify-center my-6">
+                  <div className="flex-grow h-px bg-gray-400" />
+                  <span className="mx-4 text-gray-400 text-sm font-medium">
+                    Or continue with
+                  </span>
+                  <div className="flex-grow h-px bg-gray-400" />
+                </div>
+
+                <div className="flex gap-4 justify-around">
+                  {
+                    thirdPartyProviders.includes("google") && (
+                      <button
+                        className="w-full flex justify-center items-center gap-2 px-4 py-2 border border-gray-400 rounded-md hover:bg-gray-100 transition text-sm font-medium hover:text-gray-700"
+                        onClick={() => { }}
+                      >
+                        <GoogleIcon />
+                        Google
+                      </button>
+                    )
+                  }
+
+                  {
+                    thirdPartyProviders.includes("github") && (
+                      <button
+                        className="w-full flex justify-center items-center gap-2 px-4 py-2 border border-gray-400 rounded-md hover:bg-gray-100 transition text-sm font-medium hover:text-gray-700"
+                        onClick={() => { }}
+                      >
+                        <GithubIcon />
+                        GitHub
+                      </button>
+                    )
+                  }
+                </div>
+              </div>
+            )
+          }
+
           {serverResponse && (
             <div className="w-full flex items-center my-3">
               <Alert
