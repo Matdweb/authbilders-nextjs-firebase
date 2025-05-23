@@ -26,6 +26,7 @@ export default function LoginPage() {
           onValueChange: (val) => passwordSchema.safeParse(val).success || undefined
         }
       ]}
+      thirdPartyProviders={['google', 'github']}
       extraContent={
         <section className="mt-8 text-gray-400">
           <p className="text-center">
