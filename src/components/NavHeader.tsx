@@ -15,7 +15,6 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
 import ButtonAPIRequest from './ButtonAPIRequest'
-import Image from 'next/image'
 
 export default function NavHeader() {
     const pathname = usePathname()
