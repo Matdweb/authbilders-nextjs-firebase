@@ -2,10 +2,7 @@
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithPopup,
   signOut as signOutFirebase,
-  GoogleAuthProvider,
-  GithubAuthProvider
 } from "firebase/auth";
 import { auth } from "./firebase/firebase";
 import { cookies } from "next/headers";
