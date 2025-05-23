@@ -15,6 +15,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
 import ButtonAPIRequest from './ButtonAPIRequest'
+import { AuthBildersLogo } from './AuthBildersLogo'
 
 export default function NavHeader() {
     const pathname = usePathname()
@@ -41,14 +42,7 @@ export default function NavHeader() {
                     className="lg:hidden text-gray-300"
                 />
                 <NavbarBrand>
-                    <div className="flex items-center gap-2">
-                        <Link href="/" className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">
-                                AB
-                            </div>
-                            <span className="font-bold hidden sm:block text-xl">AuthBuilders</span>
-                        </Link>
-                    </div>
+                    <AuthBildersLogo />
                 </NavbarBrand>
             </NavbarContent>
 
