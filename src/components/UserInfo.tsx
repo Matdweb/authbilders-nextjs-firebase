@@ -26,7 +26,7 @@ export function UserInfo({ data }: UserInfoProps) {
 
     sendEmailVerificationToast({
       title: response.success ? "Email verification sent" : "Failed to send verification email",
-      description: response.message?.[0] || (response.success ? "Check your inbox and junk" : "Try again"),
+      description: (response.success ? "Check your inbox and junk" : "Try again"),
       color: response.success ? "success" : "danger",
     });
   };

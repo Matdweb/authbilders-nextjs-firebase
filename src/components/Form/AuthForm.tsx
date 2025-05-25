@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { ZodType } from 'zod';
 import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/icons';
 import { AuthServerActionState } from '@/app/lib/defintions';
+import { GoogleIcon, GithubIcon } from '@/components/icons';
+import { signInWithProvider } from '@/app/lib/utils/auth-providers';
 
 interface AuthFormField {
   name: string;
@@ -15,6 +17,8 @@ interface AuthFormField {
   onValueChange?: (value: string) => void;
 }
 
+export type ThirdPartyProvidersNames = "google" | "github"
+
 interface AuthFormProps {
   title: string;
   action: (prevState: AuthServerActionState, formData: FormData) => Promise<AuthServerActionState>;
@@ -24,6 +28,7 @@ interface AuthFormProps {
   validateBeforeSubmit?: (formData: FormData) => Promise<Record<string, string> | null>;
   resetFormButton?: boolean;
   sendButtonText?: string;
+  thirdPartyProviders?: Array<ThirdPartyProvidersNames>
 }
 
 export default function AuthForm({
@@ -34,7 +39,8 @@ export default function AuthForm({
   extraContent,
   validateBeforeSubmit,
   resetFormButton = true,
-  sendButtonText
+  sendButtonText,
+  thirdPartyProviders
 }: AuthFormProps) {
   const [serverResponse, formAction, isPending] = useActionState(action, undefined);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -52,7 +58,7 @@ export default function AuthForm({
       setErrors(formatted);
     } else {
       setErrors({});
-      if (redirectTo) router.push(redirectTo);
+      if (redirectTo) router.replace(redirectTo);
     }
   };
 
@@ -79,6 +85,22 @@ export default function AuthForm({
   }, [serverResponse]);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const handleSignInWithProvider = async (provider: ThirdPartyProvidersNames) => {
+    const response = await signInWithProvider(provider);
+
+    if (!response?.success) {
+      const providers = response?.errors?.['providers']?.[0] || "";
+      console.log(providers)
+      setErrors({
+        ...errors,
+        providers
+      })
+    } else {
+      setErrors({});
+      router.push(redirectTo || '/')
+    }
+  }
 
   return (
     <section className="w-full flex min-h-screen flex-col justify-start px-6 py-12 lg:px-8 bg-gradient-to-r from-[#12222b] to-[#0e0e0e]">
@@ -152,8 +174,52 @@ export default function AuthForm({
             </Button>
             {resetFormButton && (<Button type="reset" variant="bordered">Reset</Button>)}
           </div>
+        </div>
+      </Form>
+      <section className='w-full flex justify-center mt-3'>
+        <div className='w-full max-w-md px-8'>
+          {
+            thirdPartyProviders && (
+              <div className="w-full">
+                <div className="flex items-center justify-center my-6">
+                  <div className="flex-grow h-px bg-gray-400" />
+                  <span className="mx-4 text-gray-400 text-sm font-medium">
+                    Or continue with
+                  </span>
+                  <div className="flex-grow h-px bg-gray-400" />
+                </div>
+
+                <div className="flex gap-4 justify-around">
+                  {
+                    thirdPartyProviders.includes("google") && (
+                      <button
+                        className="w-full flex justify-center items-center gap-2 px-4 py-2 border border-gray-400 rounded-md hover:bg-gray-100 transition text-sm font-medium hover:text-gray-700"
+                        onClick={() => handleSignInWithProvider("google")}
+                      >
+                        <GoogleIcon />
+                        Google
+                      </button>
+                    )
+                  }
+
+                  {
+                    thirdPartyProviders.includes("github") && (
+                      <button
+                        className="w-full flex justify-center items-center gap-2 px-4 py-2 border border-gray-400 rounded-md hover:bg-gray-100 transition text-sm font-medium hover:text-gray-700"
+                        onClick={() => handleSignInWithProvider("github")}
+                      >
+                        <GithubIcon />
+                        GitHub
+                      </button>
+                    )
+                  }
+                </div>
+              </div>
+            )
+          }
+
           {serverResponse && (
-            <div className="w-full flex items-center my-3">
+            <div className="w-full flex items-center mt-5 mb-3">
               <Alert
                 color={serverResponse.success ? 'success' : 'danger'}
                 title={serverResponse.message?.[0] || ''}
@@ -161,20 +227,16 @@ export default function AuthForm({
               />
             </div>
           )}
-          {
-            errors.token && (
-              <div className="w-full flex items-center my-3">
-                <Alert
-                  color={"danger"}
-                  title={errors.token}
-                  description={"Please resend email"}
-                />
+          {Object.entries(errors).map(([key, value]) => {
+            if (key == "providers" || key == "token") {
+              return <div key={key} className="w-full flex items-center mt-5 my-3">
+                <Alert color="danger" title={value} description="Please try again!" />
               </div>
-            )
-          }
-          {extraContent}
+            }
+          })}
         </div>
-      </Form>
+      </section>
+      {extraContent}
     </section>
   );
 }

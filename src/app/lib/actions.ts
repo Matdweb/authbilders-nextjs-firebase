@@ -55,7 +55,6 @@ export async function login(
   }
 }
 
-// SIGN UP
 export async function signUp(
   _prev: AuthServerActionState,
   formData: FormData
@@ -107,8 +106,9 @@ export async function signOut(): Promise<AuthServerActionState> {
     return errorResponse(['Sign out failed'])
   }
 }
+
 export async function sendPasswordResetEmail(
-  prevState: AuthServerActionState,
+  _prevState: AuthServerActionState,
   formData: FormData
 ): Promise<AuthServerActionState> {
   const email = formData.get("email") as string;
@@ -142,7 +142,7 @@ export async function sendPasswordResetEmail(
 }
 
 export async function handlePasswordReset(
-  prevState: AuthServerActionState,
+  _prevState: AuthServerActionState,
   formData: FormData
 ) {
   const email = formData.get("email") as string;
