@@ -1,6 +1,5 @@
-import { GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth';
+import { GoogleAuthProvider, GithubAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { auth } from "@/app/lib/firebase/firebase";
-import { signInWithPopup } from 'firebase/auth';
 import { extractErrorDetails } from './errrors';
 import { setAuthCookie } from './auth';
 import { errorResponse, successResponse } from './response';
@@ -13,10 +12,10 @@ export const signInWithProvider = async (providerName: ThirdPartyProvidersNames)
 
     provider.setCustomParameters({ prompt: "select_account" });
     try {
-        const result = await signInWithPopup(auth, provider);
-        const token = await result.user.getIdToken();
+        const result = await signInWithRedirect(auth, provider);
+        // const token = await result.user.getIdToken();
 
-        await setAuthCookie(token);
+        // await setAuthCookie(token);
 
         return successResponse([(`Logged in with ${providerName}`)]);
 
