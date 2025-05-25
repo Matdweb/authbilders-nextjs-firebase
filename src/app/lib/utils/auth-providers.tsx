@@ -1,7 +1,7 @@
 import { GoogleAuthProvider, GithubAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { auth } from "@/app/lib/firebase/firebase";
 import { extractErrorDetails } from './errrors';
-import { setAuthCookie } from './auth';
+// import { setAuthCookie } from './auth';
 import { errorResponse, successResponse } from './response';
 import type { ThirdPartyProvidersNames } from '@/components/Form/AuthForm';
 
