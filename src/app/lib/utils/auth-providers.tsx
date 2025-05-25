@@ -12,7 +12,7 @@ export const signInWithProvider = async (providerName: ThirdPartyProvidersNames)
 
     provider.setCustomParameters({ prompt: "select_account" });
     try {
-        const result = await signInWithRedirect(auth, provider);
+       await signInWithRedirect(auth, provider);
         // const token = await result.user.getIdToken();
 
         // await setAuthCookie(token);
