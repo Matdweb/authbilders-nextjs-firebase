@@ -1,6 +1,6 @@
 import { UnlockedPadlockIcon } from "@/components/icons";
-import { signOut } from "../lib/actions";
 import Link from "next/link";
+import ButtonLogout from "@/components/Buttons/ButtonLogout";
 
 export default function App() {
   return (
@@ -29,7 +29,7 @@ export default function App() {
               className="rounded-md bg-primary-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-primary-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400">
               Go back to home
             </Link>
-            <p onClick={signOut} className="text-sm/6 font-semibold text-gray-200 cursor-pointer">Sign out <span aria-hidden="true">→</span></p>
+            <ButtonLogout />
           </div>
         </div>
       </div>
