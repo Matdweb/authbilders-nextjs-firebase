@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Tooltip, Button, Code, Spinner } from '@heroui/react'
-import { CloseIcon } from './icons';
+import { CloseIcon } from '../icons';
 import { createPortal } from 'react-dom';
 
 export default function ButtonAPIRequest({ className }: { className?: string }) {
