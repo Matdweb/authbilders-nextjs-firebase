@@ -1,4 +1,3 @@
-import { UnlockedPadlockIcon } from "@/components/icons";
 import Link from "next/link";
 import ButtonLogout from "@/components/Buttons/ButtonLogout";
 import { UnprotectedBadge } from "@/components/UnprotectedBadge";
