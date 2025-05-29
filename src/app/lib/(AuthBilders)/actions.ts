@@ -7,14 +7,14 @@ import {
 import { auth } from "./firebase/firebase";
 import { cookies } from "next/headers";
 import { AuthServerActionState } from "./defintions";
-import { createResetPasswordToken } from "@/app/lib/utils/jwt";
+import { createResetPasswordToken } from "@/app/lib/(AuthBilders)/utils/jwt";
 import { FormDataSchema, passwordSchema } from "./zod";
-import { sendEmailVerification } from "@/app/lib/utils/email";
+import { sendEmailVerification } from "@/app/lib/(AuthBilders)/utils/email";
 import { successResponse, errorResponse } from "./utils/response";
 import { setAuthCookie } from "./utils/auth";
 import admin from 'firebase-admin';
 import { User } from "firebase/auth";
-import { extractErrorDetails } from '@/app/lib/utils/errrors'
+import { extractErrorDetails } from '@/app/lib/(AuthBilders)/utils/errrors'
 
 const extractUser = (user: User) => ({
   uid: user?.uid || '',

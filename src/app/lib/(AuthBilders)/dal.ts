@@ -1,4 +1,3 @@
-// import 'server-only';
 'use server'
 import { cache } from 'react';
 import { verifyIdToken } from './firebase/firebase-admin';

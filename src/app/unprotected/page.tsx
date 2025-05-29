@@ -1,6 +1,6 @@
 import Link from "next/link";
-import ButtonLogout from "@/components/Buttons/ButtonLogout";
-import { UnprotectedBadge } from "@/components/UnprotectedBadge";
+import ButtonLogout from "@/components/(AuthBilders)/Buttons/ButtonLogout";
+import { UnprotectedBadge } from "@/components/(AuthBilders)/UnprotectedBadge";
 
 export default function App() {
   return (

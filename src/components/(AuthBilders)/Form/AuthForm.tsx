@@ -3,10 +3,10 @@ import { useState, useActionState, useEffect, startTransition } from 'react';
 import { Form, Input, Button, Alert, Spinner } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import { ZodType } from 'zod';
-import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/icons';
-import { AuthServerActionState } from '@/app/lib/defintions';
-import { GoogleIcon, GithubIcon } from '@/components/icons';
-import { signInWithProvider } from '@/app/lib/utils/auth-providers';
+import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/(AuthBilders)/icons';
+import { AuthServerActionState } from '@/app/lib/(AuthBilders)/defintions';
+import { GoogleIcon, GithubIcon } from '@/components/(AuthBilders)/icons';
+import { signInWithProvider } from '@/app/lib/(AuthBilders)/utils/auth-providers';
 
 interface AuthFormField {
   name: string;
