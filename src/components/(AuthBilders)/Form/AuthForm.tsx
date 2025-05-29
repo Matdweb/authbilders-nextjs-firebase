@@ -21,14 +21,15 @@ export type ThirdPartyProvidersNames = "google" | "github"
 
 interface AuthFormProps {
   title: string;
-  action: (prevState: AuthServerActionState, formData: FormData) => Promise<AuthServerActionState>;
+  action?: (prevState: AuthServerActionState, formData: FormData) => Promise<AuthServerActionState>;
   fields: AuthFormField[];
   redirectTo?: string;
   extraContent?: React.ReactNode;
   validateBeforeSubmit?: (formData: FormData) => Promise<Record<string, string> | null>;
   resetFormButton?: boolean;
   sendButtonText?: string;
-  thirdPartyProviders?: Array<ThirdPartyProvidersNames>
+  thirdPartyProviders?: Array<ThirdPartyProvidersNames>;
+  strategy?: "server" | "next-auth";
 }
 
 export default function AuthForm({
@@ -40,12 +41,20 @@ export default function AuthForm({
   validateBeforeSubmit,
   resetFormButton = true,
   sendButtonText,
-  thirdPartyProviders
+  thirdPartyProviders,
+  strategy = "server",
 }: AuthFormProps) {
-  const [serverResponse, formAction, isPending] = useActionState(action, undefined);
+  const fallbackAction = async () => ({ success: false, errors: {}, message: [] })
+
+  const [serverResponse, formAction, isPending] = useActionState((action || fallbackAction), undefined);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
+
+  if (strategy === "server" && typeof action !== "function") {
+    throw new Error("AuthForm: server strategy requires `action` function");
+  }
+
 
   const handleServerErrors = () => {
     if (!(serverResponse?.success)) {
@@ -73,6 +82,27 @@ export default function AuthForm({
         return;
       }
     }
+    // ----- ADD NEXT AUTH SIGN-IN HERE -----
+    // const email = formData.get("email") as string;
+    // const password = formData.get("password") as string;
+
+    // if (strategy === "next-auth") {
+    //   try {
+    //     const res = await signIn("credentials", {
+    //       email,
+    //       password,
+    //       callbackUrl: redirectTo || "/",
+    //       redirect: true,
+    //     });
+
+    //     if (res?.error) {
+    //       setErrors({ ["next-auth"]: "Invalid email or password" });
+    //     }
+    //   } catch (error) {
+    //     setErrors({ ["next-auth"]: "Unexpected error during login" });
+    //   }
+    //   return;
+    // }
 
     if (Object.keys(errors).length > 0) return;
     startTransition(() => {
@@ -109,7 +139,7 @@ export default function AuthForm({
         className="w-full justify-center items-center space-y-4"
         validationBehavior="native"
         validationErrors={errors}
-        action={formAction}
+        action={strategy === "server" ? formAction : undefined}
         onSubmit={handleSubmit}
         onReset={() => setErrors({})}
       >
@@ -228,7 +258,7 @@ export default function AuthForm({
             </div>
           )}
           {Object.entries(errors).map(([key, value]) => {
-            if (key == "providers" || key == "token") {
+            if (key == "providers" || key == "token" || key == "next-auth") {
               return <div key={key} className="w-full flex items-center mt-5 my-3">
                 <Alert color="danger" title={value} description="Please try again!" />
               </div>
