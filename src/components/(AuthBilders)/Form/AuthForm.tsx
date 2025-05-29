@@ -7,6 +7,7 @@ import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/(AuthBilders)/ic
 import { AuthServerActionState } from '@/app/lib/(AuthBilders)/defintions';
 import { GoogleIcon, GithubIcon } from '@/components/(AuthBilders)/icons';
 import { signInWithProvider } from '@/app/lib/(AuthBilders)/utils/auth-providers';
+// import { extractErrorDetails } from '@/app/lib/(AuthBilders)/utils/errrors';
 
 interface AuthFormField {
   name: string;
@@ -99,7 +100,8 @@ export default function AuthForm({
     //       setErrors({ ["next-auth"]: "Invalid email or password" });
     //     }
     //   } catch (error) {
-    //     setErrors({ ["next-auth"]: "Unexpected error during login" });
+    //     const { message } = extractErrorDetails(error);
+    //     setErrors({ ["next-auth"]: (message || "Unexpected error during login") });
     //   }
     //   return;
     // }
