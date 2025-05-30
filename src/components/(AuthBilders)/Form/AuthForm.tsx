@@ -7,7 +7,7 @@ import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/(AuthBilders)/ic
 import { AuthServerActionState } from '@/app/lib/(AuthBilders)/defintions';
 import { GoogleIcon, GithubIcon } from '@/components/(AuthBilders)/icons';
 import { signInWithProvider } from '@/app/lib/(AuthBilders)/utils/auth-providers';
-// import { extractErrorDetails } from '@/app/lib/(AuthBilders)/utils/errrors';
+import { handleNextAuthSignIn } from '@/app/lib/(AuthBilders)/utils/next-auth';
 
 interface AuthFormField {
   name: string;
@@ -56,7 +56,6 @@ export default function AuthForm({
     throw new Error("AuthForm: server strategy requires `action` function");
   }
 
-
   const handleServerErrors = () => {
     if (!(serverResponse?.success)) {
       const errors = serverResponse?.errors || {};
@@ -83,28 +82,24 @@ export default function AuthForm({
         return;
       }
     }
-    // ----- ADD NEXT AUTH SIGN-IN HERE -----
-    // const email = formData.get("email") as string;
-    // const password = formData.get("password") as string;
 
-    // if (strategy === "next-auth") {
-    //   try {
-    //     const res = await signIn("credentials", {
-    //       email,
-    //       password,
-    //       callbackUrl: redirectTo || "/",
-    //       redirect: true,
-    //     });
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    //     if (res?.error) {
-    //       setErrors({ ["next-auth"]: "Invalid email or password" });
-    //     }
-    //   } catch (error) {
-    //     const { message } = extractErrorDetails(error);
-    //     setErrors({ ["next-auth"]: (message || "Unexpected error during login") });
-    //   }
-    //   return;
-    // }
+    if (strategy === "next-auth") {
+      const response = await handleNextAuthSignIn({
+        email,
+        password,
+        redirectTo
+      });
+      if (response.error) {
+        setErrors({
+          ...errors,
+          ["next-auth"]: response.error,
+        });
+        return;
+      }
+    }
 
     if (Object.keys(errors).length > 0) return;
     startTransition(() => {
@@ -123,7 +118,6 @@ export default function AuthForm({
 
     if (!response?.success) {
       const providers = response?.errors?.['providers']?.[0] || "";
-      console.log(providers)
       setErrors({
         ...errors,
         providers
@@ -254,7 +248,7 @@ export default function AuthForm({
             <div className="w-full flex items-center mt-5 mb-3">
               <Alert
                 color={serverResponse.success ? 'success' : 'danger'}
-                title={serverResponse.message?.[0] || ''}
+                title={serverResponse.message?.[0] || 'Unexpected Error :('}
                 description={serverResponse.message?.[1] || ''}
               />
             </div>
