@@ -1,6 +1,6 @@
 import { Providers } from "./providers";
 import { CountDownTimer } from "@/components/(AuthBilders)/CountDownTimer";
-import { verifySession } from "./lib/dal";
+import { verifySession } from "./lib/(AuthBilders)/dal";
 import { UserInfo } from "@/components/(AuthBilders)/UserInfo";
 import SessionErrorToastHandler from "@/components/(AuthBilders)/Handlers/SessionErrorToastHandler";
 

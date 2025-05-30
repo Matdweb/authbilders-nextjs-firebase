@@ -1,4 +1,4 @@
-import { verifySession } from "@/app/lib/dal"
+import { verifySession } from "@/app/lib/(AuthBilders)/dal"
 
 export async function GET() {
     const decoded = await verifySession();

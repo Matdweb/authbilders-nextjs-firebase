@@ -1,7 +1,7 @@
-import { ProtectedBadge } from "@/components/ProtectedBadge";
+import { ProtectedBadge } from "@/components/(AuthBilders)/ProtectedBadge";
 import Link from "next/link";
-import { verifySession } from "../lib/dal";
-import ButtonLogout from "@/components/Buttons/ButtonLogout";
+import { verifySession } from "../lib/(AuthBilders)/dal";
+import ButtonLogout from "@/components/(AuthBilders)/Buttons/ButtonLogout";
 
 export default async function App() {
   const decoded = await verifySession();
