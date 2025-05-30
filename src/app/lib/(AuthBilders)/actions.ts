@@ -14,7 +14,7 @@ import { successResponse, errorResponse } from "./utils/response";
 import { setAuthCookie } from "./utils/auth";
 import admin from 'firebase-admin';
 import { User } from "firebase/auth";
-import { extractErrorDetails } from '@/app/lib/(AuthBilders)/utils/errrors'
+import { extractErrorDetails } from '@/app/lib/(AuthBilders)/utils/errors'
 
 const extractUser = (user: User) => ({
   uid: user?.uid || '',
