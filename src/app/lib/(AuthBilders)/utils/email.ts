@@ -1,7 +1,7 @@
 'use server';
 import { signOut } from "../actions";
 import { createVerificationEmailToken } from "./jwt";
-import { extractErrorDetails } from "./errrors";
+import { extractErrorDetails } from "./errors";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 

@@ -1,7 +1,7 @@
 'use client';
-import AuthForm from '@/components/Form/AuthForm'
-import { passwordSchema } from '../lib/zod'
-import { login } from '@/app/lib/actions'
+import AuthForm from '@/components/(AuthBilders)/Form/AuthForm'
+import { passwordSchema } from '../lib/(AuthBilders)/zod'
+import { login } from '@/app/lib/(AuthBilders)/actions'
 import Link from 'next/link'
 
 export default function LoginPage() {

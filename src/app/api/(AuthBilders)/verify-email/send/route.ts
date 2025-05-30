@@ -1,4 +1,4 @@
-import { EmailVerificationTemplate } from '@/components/EmailTemplates/EmailVerificationTemplate'
+import { EmailVerificationTemplate } from '@/components/(AuthBilders)/EmailTemplates/EmailVerificationTemplate'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { ReactNode } from 'react'

@@ -1,6 +1,6 @@
 'use client';
-import AuthForm from '@/components/Form/AuthForm'
-import { sendPasswordResetEmail } from "@/app/lib/actions";
+import AuthForm from '@/components/(AuthBilders)/Form/AuthForm'
+import { sendPasswordResetEmail } from "@/app/lib/(AuthBilders)/actions";
 
 export default function Page() {
   return (

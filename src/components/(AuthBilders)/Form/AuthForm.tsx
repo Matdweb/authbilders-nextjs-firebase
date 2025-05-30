@@ -3,10 +3,11 @@ import { useState, useActionState, useEffect, startTransition } from 'react';
 import { Form, Input, Button, Alert, Spinner } from '@heroui/react';
 import { useRouter } from 'next/navigation';
 import { ZodType } from 'zod';
-import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/icons';
-import { AuthServerActionState } from '@/app/lib/defintions';
-import { GoogleIcon, GithubIcon } from '@/components/icons';
-import { signInWithProvider } from '@/app/lib/utils/auth-providers';
+import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/(AuthBilders)/icons';
+import { AuthServerActionState } from '@/app/lib/(AuthBilders)/defintions';
+import { GoogleIcon, GithubIcon } from '@/components/(AuthBilders)/icons';
+import { signInWithProvider } from '@/app/lib/(AuthBilders)/utils/auth-providers';
+import { handleNextAuthSignIn } from '@/app/lib/(AuthBilders)/utils/next-auth';
 
 interface AuthFormField {
   name: string;
@@ -21,14 +22,15 @@ export type ThirdPartyProvidersNames = "google" | "github"
 
 interface AuthFormProps {
   title: string;
-  action: (prevState: AuthServerActionState, formData: FormData) => Promise<AuthServerActionState>;
+  action?: (prevState: AuthServerActionState, formData: FormData) => Promise<AuthServerActionState>;
   fields: AuthFormField[];
   redirectTo?: string;
   extraContent?: React.ReactNode;
   validateBeforeSubmit?: (formData: FormData) => Promise<Record<string, string> | null>;
   resetFormButton?: boolean;
   sendButtonText?: string;
-  thirdPartyProviders?: Array<ThirdPartyProvidersNames>
+  thirdPartyProviders?: Array<ThirdPartyProvidersNames>;
+  strategy?: "server" | "next-auth";
 }
 
 export default function AuthForm({
@@ -40,12 +42,19 @@ export default function AuthForm({
   validateBeforeSubmit,
   resetFormButton = true,
   sendButtonText,
-  thirdPartyProviders
+  thirdPartyProviders,
+  strategy = "server",
 }: AuthFormProps) {
-  const [serverResponse, formAction, isPending] = useActionState(action, undefined);
+  const fallbackAction = async () => ({ success: false, errors: {}, message: [] })
+
+  const [serverResponse, formAction, isPending] = useActionState((action || fallbackAction), undefined);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
+
+  if (strategy === "server" && typeof action !== "function") {
+    throw new Error("AuthForm: server strategy requires `action` function");
+  }
 
   const handleServerErrors = () => {
     if (!(serverResponse?.success)) {
@@ -74,6 +83,24 @@ export default function AuthForm({
       }
     }
 
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (strategy === "next-auth") {
+      const response = await handleNextAuthSignIn({
+        email,
+        password,
+        redirectTo
+      });
+      if (response.error) {
+        setErrors({
+          ...errors,
+          ["next-auth"]: response.error,
+        });
+        return;
+      }
+    }
+
     if (Object.keys(errors).length > 0) return;
     startTransition(() => {
       formAction(formData);
@@ -91,7 +118,6 @@ export default function AuthForm({
 
     if (!response?.success) {
       const providers = response?.errors?.['providers']?.[0] || "";
-      console.log(providers)
       setErrors({
         ...errors,
         providers
@@ -109,7 +135,7 @@ export default function AuthForm({
         className="w-full justify-center items-center space-y-4"
         validationBehavior="native"
         validationErrors={errors}
-        action={formAction}
+        action={strategy === "server" ? formAction : undefined}
         onSubmit={handleSubmit}
         onReset={() => setErrors({})}
       >
@@ -222,13 +248,13 @@ export default function AuthForm({
             <div className="w-full flex items-center mt-5 mb-3">
               <Alert
                 color={serverResponse.success ? 'success' : 'danger'}
-                title={serverResponse.message?.[0] || ''}
+                title={serverResponse.message?.[0] || 'Unexpected Error :('}
                 description={serverResponse.message?.[1] || ''}
               />
             </div>
           )}
           {Object.entries(errors).map(([key, value]) => {
-            if (key == "providers" || key == "token") {
+            if (key == "providers" || key == "token" || key == "next-auth") {
               return <div key={key} className="w-full flex items-center mt-5 my-3">
                 <Alert color="danger" title={value} description="Please try again!" />
               </div>

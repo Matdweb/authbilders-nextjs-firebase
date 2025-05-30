@@ -3,7 +3,7 @@
 import { Tooltip, User, Chip, Code } from "@heroui/react";
 import { DecodedIdToken } from "firebase-admin/auth";
 import { usePathname } from "next/navigation";
-import { sendEmailVerification } from "@/app/lib/utils/email";
+import { sendEmailVerification } from "@/app/lib/(AuthBilders)/utils/email";
 import { sendEmailVerificationToast } from "./Alerts/Toasts";
 import { CloseIcon } from "./icons";
 import { useState } from "react";

@@ -1,7 +1,7 @@
 'use client';
 import { DecodedIdToken } from "firebase-admin/auth";
 import { useEffect, useRef } from "react";
-import { SessionErrorToast } from "@/components/Alerts/Toasts";
+import { SessionErrorToast } from "@/components/(AuthBilders)/Alerts/Toasts";
 import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 

@@ -1,4 +1,4 @@
-import { ResetPasswordEmail } from '@/components/EmailTemplates/ResetPasswordEmail'
+import { ResetPasswordEmail } from '@/components/(AuthBilders)/EmailTemplates/ResetPasswordEmail'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { ReactNode } from 'react'

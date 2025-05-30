@@ -1,9 +1,9 @@
 import { GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from "@/app/lib/firebase/firebase";
-import { extractErrorDetails } from './errrors';
+import { auth } from "@/app/lib/(AuthBilders)/firebase/firebase";
+import { extractErrorDetails } from './errors';
 import { setAuthCookie } from './auth';
 import { errorResponse, successResponse } from './response';
-import type { ThirdPartyProvidersNames } from '@/components/Form/AuthForm';
+import type { ThirdPartyProvidersNames } from '@/components/(AuthBilders)/Form/AuthForm';
 
 export const signInWithProvider = async (providerName: ThirdPartyProvidersNames) => {
     const provider =

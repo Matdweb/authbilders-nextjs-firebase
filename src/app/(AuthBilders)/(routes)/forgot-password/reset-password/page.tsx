@@ -1,9 +1,9 @@
 'use client';
-import AuthForm from '@/components/Form/AuthForm';
+import AuthForm from '@/components/(AuthBilders)/Form/AuthForm';
 import { useSearchParams } from "next/navigation";
-import { handlePasswordReset } from '@/app/lib/actions';
-import { passwordSchema } from '@/app/lib/zod';
-import { verifyResetPasswordToken } from '@/app/lib/utils/jwt';
+import { handlePasswordReset } from '@/app/lib/(AuthBilders)/actions';
+import { passwordSchema } from '@/app/lib/(AuthBilders)/zod';
+import { verifyResetPasswordToken } from '@/app/lib/(AuthBilders)/utils/jwt';
 
 export default function Page() {
     const params = useSearchParams();

@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { verifyVerificationEmailToken } from '../lib/utils/jwt'
+import { verifyVerificationEmailToken } from '../../../lib/(AuthBilders)/utils/jwt'
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-import { verifyEmail } from '../lib/utils/email';
+import { verifyEmail } from '../../../lib/(AuthBilders)/utils/email';
 
 export default function App() {
     const waitingText = 'Waiting for email verification...';
